@@ -18,60 +18,67 @@
             margin-top: 20px;
             padding: 10px;
             border-radius: 5px;
+            color: white;
         }
         .success {
-            color: white;
             background-color: green;
         }
         .error {
-            color: white;
             background-color: red;
         }
     </style>
 </head>
 <body>
-<div id="reader"></div>
-<div id="result"></div>
-<script>
-    function getCurrentTimeString() {
-        const now = new Date();
-        return now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
-    }
-
-    function checkTimeMatch(scannedTime) {
-        const currentTime = getCurrentTimeString();
-        const resultElement = document.getElementById('result');
-
-        if (scannedTime === currentTime) {
-            resultElement.className = 'success';
-            resultElement.textContent = 'Ora coincide!';
-        } else {
-            resultElement.className = 'error';
-            resultElement.textContent = 'Ora nu coincide!';
+    <div id="reader"></div>
+    <div id="result"></div>
+    <script>
+        function getCurrentTimeString() {
+            const now = new Date();
+            return now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
         }
-    }
 
-    function onScanSuccess(decodedText) {
-        console.log(`Codul QR scanat: ${decodedText}`);
-        checkTimeMatch(decodedText);
-    }
+        function checkTimeMatch(scannedTime) {
+            const currentTime = getCurrentTimeString();
+            const resultElement = document.getElementById('result');
 
-    function onScanError(errorMessage) {
-        // Handle scan error
-        console.error(`Eroare scanare: ${errorMessage}`);
-    }
+            const currentTimeParts = currentTime.split(':').map(Number);
+            const scannedTimeParts = scannedTime.split(':').map(Number);
 
-    const html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: 250 };
+            // Calculate the difference in seconds
+            const currentSeconds = currentTimeParts[0] * 3600 + currentTimeParts[1] * 60 + currentTimeParts[2];
+            const scannedSeconds = scannedTimeParts[0] * 3600 + scannedTimeParts[1] * 60 + scannedTimeParts[2];
+            const diffInSeconds = Math.abs(currentSeconds - scannedSeconds);
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        onScanSuccess,
-        onScanError
-    ).catch(err => {
-        console.error(`Eroare start scanner: ${err}`);
-    });
-</script>
+            if (diffInSeconds <= 1) {
+                resultElement.className = 'success';
+                resultElement.textContent = 'Ora coincide!';
+            } else {
+                resultElement.className = 'error';
+                resultElement.textContent = 'Ora nu coincide!';
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            console.log(`Codul QR scanat: ${decodedText}`);
+            checkTimeMatch(decodedText);
+        }
+
+        function onScanError(errorMessage) {
+            // Handle scan error
+            console.error(`Eroare scanare: ${errorMessage}`);
+        }
+
+        const html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: 250 };
+
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            onScanSuccess,
+            onScanError
+        ).catch(err => {
+            console.error(`Eroare start scanner: ${err}`);
+        });
+    </script>
 </body>
 </html>
