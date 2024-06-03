@@ -1,84 +1,16 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
+    <title>QR Code Reader</title>
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
-    <style>
-        #reader {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 20px auto;
-        }
-        #result {
-            text-align: center;
-            font-size: 24px;
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            color: white;
-        }
-        .success {
-            background-color: green;
-        }
-        .error {
-            background-color: red;
-        }
-    </style>
 </head>
 <body>
-    <div id="reader"></div>
+    <h1>QR Code Reader</h1>
+    <div id="reader" style="width:500px"></div>
     <div id="result"></div>
-    <script>
-        function getCurrentTimeString() {
-            const now = new Date();
-            return now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
-        }
 
-        function checkTimeMatch(scannedTime) {
-            const currentTime = getCurrentTimeString();
-            const resultElement = document.getElementById('result');
-
-            const currentTimeParts = currentTime.split(':').map(Number);
-            const scannedTimeParts = scannedTime.split(':').map(Number);
-
-            // Calculate the difference in seconds
-            const currentSeconds = currentTimeParts[0] * 3600 + currentTimeParts[1] * 60 + currentTimeParts[2];
-            const scannedSeconds = scannedTimeParts[0] * 3600 + scannedTimeParts[1] * 60 + scannedTimeParts[2];
-            const diffInSeconds = Math.abs(currentSeconds - scannedSeconds);
-
-            if (diffInSeconds <= 1) {
-                resultElement.className = 'success';
-                resultElement.textContent = 'Ora coincide!';
-            } else {
-                resultElement.className = 'error';
-                resultElement.textContent = 'Ora nu coincide!';
-            }
-        }
-
-        function onScanSuccess(decodedText) {
-            console.log(`Codul QR scanat: ${decodedText}`);
-            checkTimeMatch(decodedText);
-        }
-
-        function onScanError(errorMessage) {
-            // Handle scan error
-            console.error(`Eroare scanare: ${errorMessage}`);
-        }
-
-        const html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 10, qrbox: 250 };
-
-        html5QrCode.start(
-            { facingMode: "environment" },
-            config,
-            onScanSuccess,
-            onScanError
-        ).catch(err => {
-            console.error(`Eroare start scanner: ${err}`);
-        });
-    </script>
+    <script src="qr-reader.js"></script>
 </body>
 </html>
