@@ -7,10 +7,48 @@
     <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <h1>QR Code Reader</h1>
-    <div id="reader" style="width:500px"></div>
-    <div id="result"></div>
+<h1>QR Code Reader</h1>
+<video id="qr-video" width="500"></video>
+<div id="result"></div>
 
-    <script src="qr-reader.js"></script>
+<script>
+    // Verificăm dacă browser-ul suportă funcția getUserMedia
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    // Verificăm dacă getUserMedia este disponibil și solicităm accesul la camera dispozitivului
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia({ video: true }, handleVideo, videoError);
+    }
+
+    function handleVideo(stream) {
+        document.getElementById('qr-video').srcObject = stream;
+    }
+
+    function videoError(e) {
+        console.warn('Eroare camera:', e);
+    }
+
+    window.addEventListener('load', function() {
+        function onScanSuccess(decodedText, decodedResult) {
+            // Manejează rezultatul decodării aici
+            console.log(`Scanare reușită: ${decodedText}`);
+            document.getElementById('result').innerText = `Rezultat: ${decodedText}`;
+            html5QrCode.clear(); // Oprește scanarea după un succes
+        }
+
+        function onScanFailure(error) {
+            // Poti loga sau trata eroarea daca doresti
+            console.warn(`Scanare eșuată: ${error}`);
+        }
+
+        let html5QrCode = new Html5Qrcode();
+        html5QrCode.start(
+            'qr-video',
+            { fps: 10, qrbox: 250 },
+            onScanSuccess,
+            onScanFailure
+        );
+    });
+</script>
 </body>
 </html>
