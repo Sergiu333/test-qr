@@ -74,7 +74,7 @@ domReady(function () {
     let htmlscanner = new Html5QrcodeScanner(
         "my-qr-reader",
         {
-            fps: 10,
+            fps: 100,
             qrbos: 250,
             cameraId: "rear", // Setează cameraId la "rear" pentru a selecta camera din spate
             disableFlip: true, // Dezactivează flip-ul pentru a nu permite utilizatorului să schimbe camera
