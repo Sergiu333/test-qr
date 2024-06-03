@@ -52,7 +52,7 @@ domReady(function () {
         console.log(decodedDate.split(':')[2]);
         console.log(deviceDate.split(':')[2]);
 
-        if (difference <= 2) {
+        if (difference <= 1) {
             console.log("Success");
             body.classList.remove('red');
             body.classList.add('green');
